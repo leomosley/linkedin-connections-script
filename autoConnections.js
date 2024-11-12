@@ -1,3 +1,17 @@
+/* SEARCH PAGES:
+UoP Computer Science:
+https://www.linkedin.com/search/results/people/?keywords=university%20of%20portsmouth%20computer%20science&network=%5B%22F%22%2C%22S%22%2C%22O%22%5D&origin=FACETED_SEARCH&sid=_pG
+
+Software Engineer:
+https://www.linkedin.com/search/results/people/?keywords=software%20engineer&network=%5B%22F%22%2C%22S%22%2C%22O%22%5D&origin=FACETED_SEARCH&searchId=a005a81c-2cb4-490f-b20a-c2f5ddf7a151&sid=-am
+
+Next.js:
+https://www.linkedin.com/search/results/people/?keywords=Next.js&network=%5B%22F%22%2C%22S%22%2C%22O%22%5D&origin=FACETED_SEARCH&searchId=a005a81c-2cb4-490f-b20a-c2f5ddf7a151&sid=-am
+
+Fullstack:
+https://www.linkedin.com/search/results/people/?keywords=fullstack&network=%5B%22F%22%2C%22S%22%2C%22O%22%5D&origin=FACETED_SEARCH&searchId=a005a81c-2cb4-490f-b20a-c2f5ddf7a151&sid=-am
+*/
+
 Linkedin = {
   config: {
     scrollDelay: 1000,
