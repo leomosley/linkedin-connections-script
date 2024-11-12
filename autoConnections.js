@@ -1,8 +1,8 @@
 Linkedin = {
   config: {
     scrollDelay: 1000,
-    actionDelay: 250,
-    nextPageDelay: 250,
+    actionDelay: 500,
+    nextPageDelay: 500,
     maxRequests: -1,
     totalRequestsSent: 0,
   },
