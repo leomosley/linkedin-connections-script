@@ -12,41 +12,49 @@ Fullstack:
 https://www.linkedin.com/search/results/people/?keywords=fullstack&network=%5B%22F%22%2C%22S%22%2C%22O%22%5D&origin=FACETED_SEARCH&searchId=a005a81c-2cb4-490f-b20a-c2f5ddf7a151&sid=-am
 */
 
+/* 
+Invitation Manager:
+https://www.linkedin.com/mynetwork/invitation-manager/sent/
+*/
+
 Linkedin = {
   config: {
-    scrollDelay: 1000,
-    actionDelay: 500,
-    nextPageDelay: 500,
+    baseScrollDelay: 1000,
+    baseActionDelay: 500,
+    baseNextPageDelay: 500,
     maxRequests: -1,
     totalRequestsSent: 0,
+  },
+  getRandomisedDelay: function (baseDelay) {
+    // Adds a random variation of ±20% to the base delay
+    return baseDelay + (Math.random() * 0.4 - 0.2) * baseDelay;
   },
   init: function (data, config) {
     console.info("INFO: script initialized on the page...");
 
-    console.debug(
-      "DEBUG: scrolling to bottom in " + config.scrollDelay + " ms"
-    );
-    setTimeout(() => this.scrollBottom(data, config), config.actionDelay);
+    let scrollDelay = this.getRandomisedDelay(config.baseScrollDelay);
+    console.debug("DEBUG: scrolling to bottom in " + scrollDelay + " ms");
+
+    setTimeout(() => this.scrollBottom(data, config), scrollDelay);
   },
   scrollBottom: function (data, config) {
     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
 
-    console.debug("DEBUG: scrolling to top in " + config.scrollDelay + " ms");
+    let scrollDelay = this.getRandomisedDelay(config.baseScrollDelay);
+    console.debug("DEBUG: scrolling to top in " + scrollDelay + " ms");
 
-    setTimeout(() => this.scrollTop(data, config), config.scrollDelay);
+    setTimeout(() => this.scrollTop(data, config), scrollDelay);
   },
   scrollTop: function (data, config) {
     window.scrollTo({ top: 0, behavior: "smooth" });
 
-    console.debug(
-      "DEBUG: inspecting elements in " + config.scrollDelay + " ms"
-    );
+    let scrollDelay = this.getRandomisedDelay(config.baseScrollDelay);
+    console.debug("DEBUG: inspecting elements in " + scrollDelay + " ms");
 
-    setTimeout(() => this.inspect(data, config), config.scrollDelay);
+    setTimeout(() => this.inspect(data, config), scrollDelay);
   },
   inspect: function (data, config) {
     var totalRows = this.totalRows();
-
     console.debug("DEBUG: total search results found on page are " + totalRows);
 
     if (totalRows >= 0) {
@@ -66,19 +74,18 @@ Linkedin = {
     if (!data.pageButtons || data.pageButtons.length === 0) {
       console.warn("ERROR: no connect buttons found on page!");
       console.info("INFO: moving to next page...");
-      setTimeout(() => {
-        this.nextPage(config);
-      }, config.nextPageDelay);
+
+      let nextPageDelay = this.getRandomisedDelay(config.baseNextPageDelay);
+      setTimeout(() => this.nextPage(config), nextPageDelay);
     } else {
       data.pageButtonTotal = data.pageButtons.length;
       console.info("INFO: " + data.pageButtonTotal + " connect buttons found");
       data.pageButtonIndex = 0;
-      console.debug(
-        "DEBUG: starting to send invites in " + config.actionDelay + " ms"
-      );
-      setTimeout(() => {
-        this.sendInvites(data, config);
-      }, config.actionDelay);
+
+      let actionDelay = this.getRandomisedDelay(config.baseActionDelay);
+      console.debug("DEBUG: starting to send invites in " + actionDelay + " ms");
+
+      setTimeout(() => this.sendInvites(data, config), actionDelay);
     }
   },
   sendInvites: function (data, config) {
@@ -96,12 +103,11 @@ Linkedin = {
       );
       var button = data.pageButtons[data.pageButtonIndex];
       button.click();
-      console.debug(
-        "DEBUG: clicking send in popup, if present, in " +
-        config.actionDelay +
-        " ms"
-      );
-      setTimeout(() => this.clickSend(data, config), config.actionDelay);
+
+      let actionDelay = this.getRandomisedDelay(config.baseActionDelay);
+      console.debug("DEBUG: clicking send in popup, if present, in " + actionDelay + " ms");
+
+      setTimeout(() => this.clickSend(data, config), actionDelay);
     }
   },
   clickSend: function (data, config) {
@@ -111,18 +117,15 @@ Linkedin = {
       return el.textContent.trim() === "Send without a note";
     });
 
-    // Click the first send button
     if (sendButton && sendButton[0]) {
       console.debug("DEBUG: clicking send button to close popup");
       sendButton[0].click();
     } else {
-      console.debug(
-        "DEBUG: send button not found, clicking close on the popup in " +
-        config.actionDelay
-      );
+      console.debug("DEBUG: send button not found, clicking close on the popup");
     }
 
-    setTimeout(() => this.clickClose(data, config), config.actionDelay);
+    let actionDelay = this.getRandomisedDelay(config.baseActionDelay);
+    setTimeout(() => this.clickClose(data, config), actionDelay);
   },
   clickClose: function (data, config) {
     var closeButton = document.getElementById("ember1683");
@@ -142,18 +145,17 @@ Linkedin = {
     config.totalRequestsSent++;
 
     if (data.pageButtonIndex === data.pageButtonTotal - 1) {
-      console.debug(
-        "DEBUG: all connections for the page done, going to next page in " +
-        config.actionDelay +
-        " ms"
-      );
-      setTimeout(() => this.nextPage(config), config.actionDelay);
+      let nextPageDelay = this.getRandomisedDelay(config.baseNextPageDelay);
+      console.debug("DEBUG: all connections for the page done, going to next page in " + nextPageDelay + " ms");
+
+      setTimeout(() => this.nextPage(config), nextPageDelay);
     } else {
       data.pageButtonIndex++;
-      console.debug(
-        "DEBUG: sending next invite in " + config.actionDelay + " ms"
-      );
-      setTimeout(() => this.sendInvites(data, config), config.actionDelay);
+
+      let actionDelay = this.getRandomisedDelay(config.baseActionDelay);
+      console.debug("DEBUG: sending next invite in " + actionDelay + " ms");
+
+      setTimeout(() => this.sendInvites(data, config), actionDelay);
     }
   },
   nextPage: function (config) {
@@ -172,7 +174,9 @@ Linkedin = {
 
     console.info("INFO: Going to next page...");
     pagerButton[0].click();
-    setTimeout(() => this.init({}, config), config.nextPageDelay);
+
+    let nextPageDelay = this.getRandomisedDelay(config.baseNextPageDelay);
+    setTimeout(() => this.init({}, config), nextPageDelay);
   },
   complete: function (config) {
     console.info(
@@ -183,11 +187,7 @@ Linkedin = {
   },
   totalRows: function () {
     var search_results = document.getElementsByClassName("search-result");
-    if (search_results && search_results.length != 0) {
-      return search_results.length;
-    } else {
-      return 0;
-    }
+    return search_results ? search_results.length : 0;
   },
 };
 
